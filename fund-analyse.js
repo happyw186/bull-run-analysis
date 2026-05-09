@@ -15,12 +15,7 @@
         }
     }
 
-    // 兼容旧代码：读取 baseBenchmarkNV 等字段
-    function getStoredData() {
-        return STORED_DATA;
-    }
-
-    // ---------- 金融计算引擎（保持不变） ----------
+    // ---------- 金融计算引擎（风险利率直接从云端数据读取） ----------
     function calcMetrics(dates, prodNV, benchNV) {
         if (dates.length < 2) return null;
         const start = new Date(dates[0]), end = new Date(dates[dates.length - 1]);
@@ -45,7 +40,8 @@
         let cov = 0, varB = 0;
         for (let i = 0; i < minLen; i++) { cov += (pR[i] - avgPRet) * (bR[i] - avgB); varB += (bR[i] - avgB) ** 2; }
         const beta = varB ? cov / varB : 1;
-        const rf = parseFloat(document.getElementById('riskFreeRateInput').value) / 100 || 0.02;
+        // 直接从 STORED_DATA 读取无风险利率，避免依赖 DOM 元素
+        const rf = (STORED_DATA && STORED_DATA.riskFreeRate) ? STORED_DATA.riskFreeRate / 100 : 0.02;
         const alpha = (pAnn - rf) - beta * (bAnn - rf);
         const sharpe = pVol ? (pAnn - rf) / pVol : 0;
         const calmar = maxDD ? pAnn / Math.abs(maxDD) : 0;
@@ -150,20 +146,16 @@
         }
     }
 
-    // ---------- 导出 PDF（保持不变） ----------
+    // ---------- 导出 PDF（已移除 maintenancePanel 相关代码） ----------
     async function exportPDF() {
-        const panel = document.getElementById('maintenancePanel');
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;';
         overlay.innerHTML = '<div style="background:#1e293b;padding:30px 50px;border-radius:12px;">📄 正在生成极简报告…</div>';
         document.body.appendChild(overlay);
         try {
-            const originalVisibility = panel.style.visibility;
-            panel.style.visibility = 'hidden';
             await new Promise(resolve => setTimeout(resolve, 300));
             const container = document.getElementById('mainContainer');
             const fullCanvas = await html2canvas(container, { scale: 1.5, useCORS: true, backgroundColor: '#ffffff' });
-            panel.style.visibility = originalVisibility;
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pageW = pdf.internal.pageSize.getWidth(), pageH = pdf.internal.pageSize.getHeight();
@@ -221,19 +213,17 @@
         }
     }
 
-    // ---------- 联系人自动记忆（仍使用 localStorage） ----------
+    // ---------- 联系人自动记忆 ----------
     function saveContact(name, phone) {
         localStorage.setItem('bull_contact', JSON.stringify({ name, phone }));
     }
     function loadContact() {
         const saved = localStorage.getItem('bull_contact');
-        if (saved) {
-            try { return JSON.parse(saved); } catch (e) { }
-        }
+        if (saved) { try { return JSON.parse(saved); } catch (e) { } }
         return { name: '', phone: '' };
     }
 
-    // ---------- 关于它的一生（保持不变） ----------
+    // ---------- 关于它的一生 ----------
     function showAboutModal() {
         const existing = document.querySelector('.secret-modal-overlay');
         if (existing) existing.remove();
@@ -255,48 +245,29 @@
         overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
     }
 
-    // ---------- 页面加载入口 ----------
+    // ---------- 页面启动 ----------
     document.addEventListener('DOMContentLoaded', async () => {
-        // 加载云端数据
         const stored = await loadCloudData();
         if (!stored) return;
-
-        // 从云端数据更新基准参数（隐藏的固定值，不可修改）
-        document.getElementById('baseBenchmarkInput').value = stored.baseBenchmarkNV || 1.0;
-        document.getElementById('baseBenchmarkInput').disabled = true;
-        document.getElementById('riskFreeRateInput').value = stored.riskFreeRate || 2.0;
-        document.getElementById('riskFreeRateInput').disabled = true;
 
         // 恢复联系人
         const contact = loadContact();
         document.getElementById('contactName').value = contact.name || '';
         document.getElementById('contactPhone').value = contact.phone || '';
 
-        // 初始化图表
+        // 初始化所有分析内容
         updateUI(stored);
 
-        // 设置日期筛选器默认值
+        // 日期筛选器默认值
         const allDates = Object.keys(stored.weeklyData).sort();
         if (allDates.length) {
             document.getElementById('startDate').value = allDates[0];
             document.getElementById('endDate').value = allDates[allDates.length - 1];
         }
 
-        // 隐藏净值维护面板（普通用户不可操作）
-        // 隐藏维护面板中的表单内容，只留下标题和说明（如果有需要可保留）
-        const panel = document.getElementById('maintenancePanel');
-        if (panel) {
-            // 隐藏所有直接子元素，但保留面板结构
-            const children = panel.children;
-            for (let i = 0; i < children.length; i++) {
-                children[i].style.display = 'none';
-            }
-        }
-
-        // 绑定“关于它的一生”按钮
+        // 事件绑定
         document.getElementById('showSecretBtn').addEventListener('click', showAboutModal);
 
-        // 绑定分析区间按钮
         document.getElementById('applyRangeBtn').addEventListener('click', () => {
             const start = document.getElementById('startDate').value;
             const end = document.getElementById('endDate').value;
@@ -312,10 +283,8 @@
             updateUI(stored);
         });
 
-        // 导出 PDF
         document.getElementById('exportPdfBtn').addEventListener('click', exportPDF);
 
-        // 联系人自动保存
         document.getElementById('contactName').addEventListener('blur', () => {
             saveContact(
                 document.getElementById('contactName').value.trim(),
@@ -329,7 +298,6 @@
             );
         });
 
-        // 响应式图表
         window.addEventListener('resize', () => { nvChart?.resize(); ddChart?.resize(); });
     });
 })();
