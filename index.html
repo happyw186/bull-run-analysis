@@ -628,28 +628,6 @@
             <p style="font-size:12px; color: var(--text-muted); margin-top: 10px;">
                 提示：同一日期重复保存，以最后一次输入的数值为准。修改后需点击“更新分析报告”。<br>点击“自动获取行情”将通过东方财富K线接口填入沪深300真实开盘/收盘价。</p>
         </div>
-        <!-- 始终可见的客户功能区域 -->
-        <div
-            style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-            <div
-                style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
-                <div style="display: flex; gap: 15px; align-items: center;">
-                    <div>
-                        <label style="font-size:13px;color:var(--text-muted);font-weight:600;">联系人姓名</label>
-                        <input type="text" id="contactName" placeholder="如 张三"
-                            style="width:100px; padding:6px 10px; border:1px solid var(--border-color); border-radius:6px;">
-                    </div>
-                    <div>
-                        <label style="font-size:13px;color:var(--text-muted);font-weight:600;">联系电话</label>
-                        <input type="text" id="contactPhone" placeholder="如 138xxxx"
-                            style="width:130px; padding:6px 10px; border:1px solid var(--border-color); border-radius:6px;">
-                    </div>
-                </div>
-                <button class="btn btn-export-report" id="exportPdfBtn">📄 导出极简报告</button>
-            </div>
-            <p style="font-size:12px; color: var(--text-muted); margin-top: 10px;">
-                提示：数据由管理员统一维护。输入联系人信息后，点击右侧按钮即可导出带联系方式的报告。</p>
-        </div>
 
         <!-- 底部指标释义 -->
         <div class="glossary">
@@ -685,6 +663,27 @@
                 </div>
             </div>
         </div>
+    </div>
+    <!-- 始终可见的客户功能区域 -->
+    <div
+        style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div>
+                    <label style="font-size:13px;color:var(--text-muted);font-weight:600;">联系人姓名</label>
+                    <input type="text" id="contactName" placeholder="如 张三"
+                        style="width:100px; padding:6px 10px; border:1px solid var(--border-color); border-radius:6px;">
+                </div>
+                <div>
+                    <label style="font-size:13px;color:var(--text-muted);font-weight:600;">联系电话</label>
+                    <input type="text" id="contactPhone" placeholder="如 138xxxx"
+                        style="width:130px; padding:6px 10px; border:1px solid var(--border-color); border-radius:6px;">
+                </div>
+            </div>
+            <button class="btn btn-export-report" id="exportPdfBtn">📄 导出极简报告</button>
+        </div>
+        <p style="font-size:12px; color: var(--text-muted); margin-top: 10px;">
+            提示：数据由管理员统一维护。输入联系人信息后，点击右侧按钮即可导出带联系方式的报告。</p>
     </div>
 
     <!-- 引用外部混淆后的 JS 文件 -->
