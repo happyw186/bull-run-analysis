@@ -582,52 +582,7 @@
         </div>
 
         <!-- 净值维护面板 -->
-        <div class="maintenance-card" id="maintenancePanel">
-            <div class="maintenance-card" id="maintenancePanel" style="display:none;"></div>
-            <h3>📝 净值维护</h3>
-            <div class="backup-row">
-                <button class="btn btn-outline" id="exportBtn">💾 导出数据备份</button>
-                <button class="btn btn-outline" id="importBtn">📥 导入数据恢复</button>
-                <input type="file" id="importFileInput" accept=".json" style="display:none;">
-                <span class="feedback" id="backupFeedback"></span>
-            </div>
-            <div class="divider"></div>
-
-            <div class="settings-row">
-                <div><label>初始基准净值</label><input type="number" id="baseBenchmarkInput" step="0.0001" value="1.0000"
-                        style="width:100px;"></div>
-                <div><label>无风险利率 (%)</label><input type="number" id="riskFreeRateInput" step="0.1" value="2.0"
-                        style="width:80px;"></div>
-                <button class="btn btn-secondary" id="applySettingsBtn">应用设置</button>
-            </div>
-
-            <div class="form-group">
-                <div><label>日期</label><input type="date" id="inputDate"></div>
-                <div><label>产品净值</label><input type="number" id="inputProd" step="0.0001" placeholder="例如 1.0500"></div>
-                <div><label>沪深300开盘</label><input type="number" id="inputOpen" step="0.01" placeholder="例如 4200"></div>
-                <div><label>沪深300收盘</label><input type="number" id="inputClose" step="0.01" placeholder="例如 4250"></div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
-                    <button class="btn btn-auto" id="autoFetchBtn">⚡ 自动获取行情</button>
-                    <span class="fetch-hint">数据来源：东方财富</span>
-                </div>
-                <div style="display: flex; align-items: flex-end; gap: 5px;">
-                    <button class="btn" id="saveEntryBtn">保存</button>
-                    <button class="btn btn-secondary" id="cancelEditBtn" style="display:none;">取消</button>
-                </div>
-                <span class="error-msg" id="formError"></span>
-                <span class="success-msg" id="formSuccess"></span>
-            </div>
-
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
-                <button class="btn" id="updateAnalysisBtn">🔄 更新分析报告</button>
-                <button class="btn btn-secondary" id="resetDefaultBtn">↺ 恢复默认数据</button>
-
-            </div>
-
-
-            <p style="font-size:12px; color: var(--text-muted); margin-top: 10px;">
-                提示：同一日期重复保存，以最后一次输入的数值为准。修改后需点击“更新分析报告”。<br>点击“自动获取行情”将通过东方财富K线接口填入沪深300真实开盘/收盘价。</p>
-        </div>
+       
 
         <!-- 底部指标释义 -->
         <div class="glossary">
